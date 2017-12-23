@@ -8,7 +8,8 @@
         :paginate="true"
         :perPage='20'
         :onClick="viewSong"
-        globalSearch='true'
+        :globalSearchFn="searchFn"
+        :globalSearch= "true"
         />
     </div>
 </div>
@@ -90,6 +91,30 @@ export default {
   },
 
   methods: {
+    searchFn(row, col, cellValue, searchTerm) {
+      let searchMatch = true
+      const searchTerms = searchTerm.trim().toLowerCase().split(' ')
+      const rowFields = ['language', 'name', 'composer', 'season','lyricist', 'yearCreated', 'haveChart','keys','instrumentations','miscCategories', 'notes', 'rehearsedWith' ]
+      let rowValues = []
+      rowFields.forEach(field => {
+        if(row[field]){
+          const values = row[field].toLowerCase().split(' ')
+          values.forEach(value => {
+            rowValues.push(value)
+          })
+        }
+      })
+      searchTerms.forEach(term => {
+        for(let i = 0; i < rowValues.length; i++){
+          if(rowValues[i].indexOf(term) > -1){
+            searchMatch = true
+            break
+          }
+            searchMatch = false
+        }
+      })
+      return searchMatch
+    },
     initializeSite(res){
       this.songs = res.body.data;
       this.setSongs(this.songs)
