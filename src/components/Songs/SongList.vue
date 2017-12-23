@@ -96,6 +96,7 @@ export default {
       const searchTerms = searchTerm.trim().toLowerCase().split(' ')
       const rowFields = ['language', 'name', 'composer', 'season','lyricist', 'yearCreated', 'haveChart','keys','instrumentations','miscCategories', 'notes', 'rehearsedWith' ]
       let rowValues = []
+      var searchAgain = true
       rowFields.forEach(field => {
         if(row[field]){
           const values = row[field].toLowerCase().split(' ')
@@ -106,11 +107,14 @@ export default {
       })
       searchTerms.forEach(term => {
         for(let i = 0; i < rowValues.length; i++){
-          if(rowValues[i].indexOf(term) > -1){
+          if(rowValues[i].indexOf(term) > -1 && searchAgain){
             searchMatch = true
             break
           }
             searchMatch = false
+            if(i === rowValues.length-1){
+              searchAgain = false
+            }
         }
       })
       return searchMatch
